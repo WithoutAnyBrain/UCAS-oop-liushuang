@@ -21,9 +21,11 @@ Starting taskexecutor daemon on host foreigner.
 ### Flink集群启动
 
 【注1】
+
 cluster是flink的集群环境，是分布式系统的核心概念。
 
 【注2】
+
 我们通过阅读.log日志文件，可以看到Flink集群启动的部分过程。但是这些类在.log中出现的顺序不能完全反映程序的执行顺序，因为Flink的执行是异步的，不同的类可能在不同的线程中执行。实际上，它们根据组件的依赖关系和初始化需求由flink框架协调执行。
 
 所以我们结合日志内容和flink的架构，编写以下内容，包含flink集群启动的主要阶段和组件。
@@ -36,7 +38,9 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 
 `ClusterEntrypoint` 类包含了 `runClusterEntrypoint`、`startCluster`、`initializeServices`、`runCluster` 四个核心方法。
 
-【注】`ClusterEntrypoint` 是抽象类（意味着它没有实现），只能被子类继承实现。比如 `StandaloneSessionClusterEntrypoint` 是 `ClusterEntrypoint` 的子类，是 `ClusterEntrypoint` 的具体实现类，扩展了 `ClusterEntrypoint` 的功能。是 Flink 集群的入口程序，负责启动 `JobManager` 和 `TaskManager`。
+【注】
+
+`ClusterEntrypoint` 是抽象类（意味着它没有实现），只能被子类继承实现。比如 `StandaloneSessionClusterEntrypoint` 是 `ClusterEntrypoint` 的子类，是 `ClusterEntrypoint` 的具体实现类，扩展了 `ClusterEntrypoint` 的功能。是 Flink 集群的入口程序，负责启动 `JobManager` 和 `TaskManager`。
 
 **runClusterEntrypoint 方法**
 * 功能: 启动集群入口的主方法（Flink 启动的起点）。
@@ -78,6 +82,7 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 工厂实例创建，返回一个 `DispatcherResourceManagerComponentFactory` 对象。
 
 【注】
+
 工厂是一种设计模式，用于创建对象，隐藏对象的创建细节，提供一个统一的接口。
 所以`dispatcherResourceManagerComponentFactory`是一个接口，定义在[flink-runtime/src/main/java/org/apache/flink/runtime/entrypoint/component/DispatcherResourceManagerComponentFactory.java](https://github.com/apache/flink/blob/master/flink-runtime/src/main/java/org/apache/flink/runtime/entrypoint/component/DispatcherResourceManagerComponentFactory.java)
 
@@ -452,9 +457,11 @@ DataStream<Tuple2<String, Integer>> counts =
     - 对每个单词的计数（第二字段 1）求和。如果输入数据是有界的，sum算子会输出每个单词的最终计数；如果输入数据是无界的，sum算子会持续输出每次看到单词的新实例时的更新。
 
 【注1】
+
 Flink流式计算的核心概念是将数据从输入流一个个传递给Operator进行链式处理，最终输出结果。以source开始，sink结尾，中间operator做的操作叫做transform。
 
 【注2】
+
 Chain（算子链）：是Flink的优化机制，将多个算子合并到同一个任务中，从而减少网络通信开销。算子们是否组成Chain取决于Flink的任务链策略。
 在实际运行中，可以通过设置 env.disableOperatorChaining() 禁用算子链，或者使用 startNewChain()、disableChaining() 控制链的边界，从而影响 StreamGraph 到 JobGraph 的生成过程。
 
@@ -469,10 +476,14 @@ env.execute("WordCount");
 算子的定义在调用execute方法之前，在Flink的执行环境中注册了算子，而不是立即执行。
 Flink的执行环境是懒加载的，只有调用execute方法时，Flink才将这些算子构建为一个作业图（JobGraph），然后提交作业给JobManager执行。
 
-【注1】env.execute()调用后，每个算子（source，flatMap等）都会被解析为一个节点，StreamGraph 以有向无环图 (DAG) 的形式表示算子之间的逻辑关系。
+【注1】
+
+env.execute()调用后，每个算子（source，flatMap等）都会被解析为一个节点，StreamGraph 以有向无环图 (DAG) 的形式表示算子之间的逻辑关系。
 随后，streamGragh被优化后生成JobGraph，JobGraph会合并算子链，表示具体的任务调度单元。它被提交给JobManager，JobManager会将JobGraph转换成一个Job并执行。
 
-【注2】JobManager根据JobGraph将任务调度到合适的TaskManager。
+【注2】
+
+JobManager根据JobGraph将任务调度到合适的TaskManager。
 TaskManager是Flink的工作节点，每个算子链会被分配到一个TaskManager上的一个或多个TaskSlot中，TaskSlot是TaskManager的资源分配单元。
 
 **提交作业**
