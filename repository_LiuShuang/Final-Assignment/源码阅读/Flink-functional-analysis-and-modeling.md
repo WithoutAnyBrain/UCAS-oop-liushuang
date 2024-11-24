@@ -4,11 +4,11 @@
 
 Flink的作业调度机制可以用下图说明（Flink Standalone模式）：
 
-<figure><img src=".gitbook/assets/提交作业示意图.png" alt=""><figcaption><p>Flink Standalone作业调度机制</p></figcaption></figure>
+<figure><img src="../%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/.gitbook/assets/%E6%8F%90%E4%BA%A4%E4%BD%9C%E4%B8%9A%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt=""><figcaption><p>Flink Standalone作业调度机制</p></figcaption></figure>
 
-Program Code通常是用户根据需求编写的Java代码，用于定义Flink应用程序的逻辑。Dataflow是用户定义的数据流程序，描述数据如何流动和处理。Optimizer优化执行计划，GraphBuilder将用户定义的程序代码转化为DataflowGraph。DataFlowGraph是一个有向图，表述了数据流程序的结构。图中的节点代表操作符，即算子（如map，filter），边代表数据流动的路径。它表示数据流的逻辑结构，包含数据流程序的操作符和它们之间的数据流动关系。DataflowGraph是Flink执行引擎（主要在runtime部分实现）理解和执行用户程序的基础。Client负责将用户的程序代码转换为DataflowGraph，并将其提交给JobManager，Client包含了Actor System<sup>【注1】</sup>来处理分布式通信，并监督作业的执行状态。
+Program Code通常是用户根据需求编写的Java代码，用于定义Flink应用程序的逻辑。Dataflow是用户定义的数据流程序，描述数据如何流动和处理。Optimizer优化执行计划，GraphBuilder将用户定义的程序代码转化为DataflowGraph。DataFlowGraph是一个有向图，表述了数据流程序的结构。图中的节点代表操作符，即算子（如map，filter），边代表数据流动的路径。它表示数据流的逻辑结构，包含数据流程序的操作符和它们之间的数据流动关系。DataflowGraph是Flink执行引擎（主要在runtime部分实现）理解和执行用户程序的基础。Client负责将用户的程序代码转换为DataflowGraph，并将其提交给JobManager，Client包含了Actor System【注1】来处理分布式通信，并监督作业的执行状态。
 
-Job Manager将用户定义的逻辑计划（如DataflowGraph）转化为物理执行计划（Execution Graph<sup>【注2】</sup>）。Job Manager的Actor System负责管理整个Flink作业的生命周期，包括任务调度，资源分配，故障恢复等。它维护作业的状态，并协调Task Manager的工作。Scheduler负责将作业的执行计划转换为物理执行计划，并分配任务到不同Task Manager上执行。Checkpoint Coordinator负责管理作业的检查点机制。检查点是一种故障恢复机制，用于捕获作业的状态，包括数据状态和算子状态，它允许Flink作业在发生故障时从最近的检查点恢复。Checkpoint Coordinator会定期触发检查点，并将状态数据保存到配置的持久化存储中，它还涉及对进程间或线程间的数据共享管理。
+Job Manager将用户定义的逻辑计划（如DataflowGraph）转化为物理执行计划（Execution Graph【注2】）。Job Manager的Actor System负责管理整个Flink作业的生命周期，包括任务调度，资源分配，故障恢复等。它维护作业的状态，并协调Task Manager的工作。Scheduler负责将作业的执行计划转换为物理执行计划，并分配任务到不同Task Manager上执行。Checkpoint Coordinator负责管理作业的检查点机制。检查点是一种故障恢复机制，用于捕获作业的状态，包括数据状态和算子状态，它允许Flink作业在发生故障时从最近的检查点恢复。Checkpoint Coordinator会定期触发检查点，并将状态数据保存到配置的持久化存储中，它还涉及对进程间或线程间的数据共享管理。
 
 Job Manager和Task Manager是主从关系。Task Manager（从）会定期向Job Manager（主）定期发送心跳信号，用于报告Task Manager的状态和健康状况。心跳数据通常包括Task Manager的资源使用情况、任务执行状态、检查点进度等信息。心跳机制是Flink分布式协调和故障恢复的基础，它帮助Job Manager监控集群状态并做出相应的调度决策。
 
@@ -48,31 +48,31 @@ Network Manager负责管理Task Manager之间的数据交换。它处理数据�
 
 **ExecutionGraph**
 
-<table><thead><tr><th width="221"> 属性/方法</th><th width="65">类型</th><th>说明</th></tr></thead><tbody><tr><td>-List&#x3C;Task> tasks</td><td>私有属性</td><td>作业的物理执行任务列表</td></tr><tr><td>-Map&#x3C;TaskSlot, List&#x3C;Task>> taskAssignments</td><td>私有属性</td><td>任务槽和任务的分配关系</td></tr><tr><td>+void scheduleTasks()</td><td>公有方法</td><td>为作业分配任务</td></tr><tr><td>+void updateTaskStatus(Task task)</td><td>公有方法</td><td>更新任务的状态</td></tr></tbody></table>
+<table><thead><tr><th width="221">属性/方法</th><th width="65">类型</th><th>说明</th></tr></thead><tbody><tr><td>-List&#x3C;Task> tasks</td><td>私有属性</td><td>作业的物理执行任务列表</td></tr><tr><td>-Map&#x3C;TaskSlot, List&#x3C;Task>> taskAssignments</td><td>私有属性</td><td>任务槽和任务的分配关系</td></tr><tr><td>+void scheduleTasks()</td><td>公有方法</td><td>为作业分配任务</td></tr><tr><td>+void updateTaskStatus(Task task)</td><td>公有方法</td><td>更新任务的状态</td></tr></tbody></table>
 
 ***
 
 **Scheduler**
 
-<table><thead><tr><th width="240"> 属性/方法</th><th width="76">类型</th><th>说明</th></tr></thead><tbody><tr><td>+void schedule(ExecutionGraph executionGraph)</td><td>公有方法</td><td>负责调度作业执行</td></tr><tr><td>-void allocateResources()</td><td>私有方法</td><td>为任务分配资源</td></tr></tbody></table>
+<table><thead><tr><th width="240">属性/方法</th><th width="76">类型</th><th>说明</th></tr></thead><tbody><tr><td>+void schedule(ExecutionGraph executionGraph)</td><td>公有方法</td><td>负责调度作业执行</td></tr><tr><td>-void allocateResources()</td><td>私有方法</td><td>为任务分配资源</td></tr></tbody></table>
 
 ***
 
 **CheckpointCoordinator**
 
-<table><thead><tr><th width="230"> 属性/方法</th><th width="69">类型</th><th>说明</th></tr></thead><tbody><tr><td>-List&#x3C;Checkpoint> checkpoints</td><td>私有属性</td><td>存储当前作业的所有检查点。</td></tr><tr><td>+void triggerCheckpoint()</td><td>公有方法</td><td>定期触发新的检查点。</td></tr><tr><td>+void restoreFromCheckpoint(Checkpoint checkpoint)</td><td>公有方法</td><td>从指定检查点恢复状态。</td></tr></tbody></table>
+<table><thead><tr><th width="230">属性/方法</th><th width="69">类型</th><th>说明</th></tr></thead><tbody><tr><td>-List&#x3C;Checkpoint> checkpoints</td><td>私有属性</td><td>存储当前作业的所有检查点。</td></tr><tr><td>+void triggerCheckpoint()</td><td>公有方法</td><td>定期触发新的检查点。</td></tr><tr><td>+void restoreFromCheckpoint(Checkpoint checkpoint)</td><td>公有方法</td><td>从指定检查点恢复状态。</td></tr></tbody></table>
 
 ***
 
 **TaskManager**
 
-<table><thead><tr><th width="195"> 属性/方法</th><th width="69">类型</th><th>	说明</th></tr></thead><tbody><tr><td>+String ID</td><td>公有属性</td><td>TaskManager 的唯一标识符</td></tr><tr><td>-List&#x3C;TaskSlot> taskSlots</td><td>私有属性</td><td>任务槽列表，用于资源隔离</td></tr><tr><td>-ActorSystem actorSystem</td><td>私有属性</td><td>用于处理分布式通信</td></tr><tr><td>+void reportStatus()</td><td>公有方法</td><td>定期报告自身状态</td></tr><tr><td>+void executeTask(Task task)</td><td>公有方法</td><td>执行分配到的任务</td></tr></tbody></table>
+<table><thead><tr><th width="195">属性/方法</th><th width="69">类型</th><th>说明</th></tr></thead><tbody><tr><td>+String ID</td><td>公有属性</td><td>TaskManager 的唯一标识符</td></tr><tr><td>-List&#x3C;TaskSlot> taskSlots</td><td>私有属性</td><td>任务槽列表，用于资源隔离</td></tr><tr><td>-ActorSystem actorSystem</td><td>私有属性</td><td>用于处理分布式通信</td></tr><tr><td>+void reportStatus()</td><td>公有方法</td><td>定期报告自身状态</td></tr><tr><td>+void executeTask(Task task)</td><td>公有方法</td><td>执行分配到的任务</td></tr></tbody></table>
 
 ***
 
 **TaskSlot**
 
-<table><thead><tr><th width="231"> 属性/方法</th><th width="99">类型</th><th>说明</th></tr></thead><tbody><tr><td>+int slotID</td><td>公有属性</td><td>任务槽唯一标识符</td></tr><tr><td>-Task currentTask</td><td>私有属性</td><td>当前分配的任务</td></tr><tr><td>+void allocate(Task task)</td><td>公有方法</td><td>分配任务到该任务槽</td></tr><tr><td>+void release()</td><td>公有方法</td><td>释放任务槽</td></tr></tbody></table>
+<table><thead><tr><th width="231">属性/方法</th><th width="99">类型</th><th>说明</th></tr></thead><tbody><tr><td>+int slotID</td><td>公有属性</td><td>任务槽唯一标识符</td></tr><tr><td>-Task currentTask</td><td>私有属性</td><td>当前分配的任务</td></tr><tr><td>+void allocate(Task task)</td><td>公有方法</td><td>分配任务到该任务槽</td></tr><tr><td>+void release()</td><td>公有方法</td><td>释放任务槽</td></tr></tbody></table>
 
 ***
 
@@ -114,7 +114,7 @@ Network Manager负责管理Task Manager之间的数据交换。它处理数据�
 
 **用类图来表示**
 
-```mermaid
+```markdown
 
 classDiagram
 %% ActorSystem
@@ -258,4 +258,4 @@ ActorSystem --> Message : sends/receives
 
 <table data-full-width="false"><thead><tr><th width="182">类名</th><th width="46">ActorSystem</th><th width="47">Client</th><th width="45">JobManager</th><th width="47">Scheduler</th><th width="46">CheckpointCoordinator</th><th width="46">TaskManager</th><th width="43">NetworkManager</th><th width="40">DataflowGraph</th><th width="46">ExecutionGraph</th><th width="44">TaskSlot</th><th width="46">Task</th><th width="48">Operator</th><th width="47">Checkpoint</th><th>Message</th></tr></thead><tbody><tr><td>ActorSystem</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr><tr><td>Client</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>JobManager</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr><tr><td>Scheduler</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Checkpoint-Coordinator</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr><tr><td>TaskManager</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr><tr><td>NetworkManager</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>DataflowGraph</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr><tr><td>ExecutionGraph</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><td>TaskSlot</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Task</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td></tr><tr><td>Operator</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><td>Checkpoint</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td></tr><tr><td>Message</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr></tbody></table>
 
-<figure><img src=".gitbook/assets/类的依赖关系.png" alt=""><figcaption><p>依赖矩阵</p></figcaption></figure>
+<figure><img src="../%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/.gitbook/assets/%E7%B1%BB%E7%9A%84%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png" alt=""><figcaption><p>依赖矩阵</p></figcaption></figure>
