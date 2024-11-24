@@ -114,7 +114,7 @@ Network Manager负责管理Task Manager之间的数据交换。它处理数据�
 
 **用类图来表示**
 
-```markdown
+```mermaid
 
 classDiagram
 %% ActorSystem
