@@ -214,8 +214,6 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 
 ***
 
-***
-
 ### 5. 提交作业
 
 以Flink官方仓库中提供的[flink/blob/master/flink-examples/flink-examples-streaming/src/main/java/org/apache/flink/streaming/examples/wordcount/WordCount.java](https://github.com/apache/flink/blob/master/flink-examples/flink-examples-streaming/src/main/java/org/apache/flink/streaming/examples/wordcount/WordCount.java)作业为例分析。
