@@ -88,14 +88,25 @@ Apache Flink是一个开源的流处理框架，用于实时数据流的处理�
 在GitHub上的Flink代码仓库中[Github Repository](https://github.com/apache/flink)，Flink的代码被组织成了多个模块，每个模块都包含了不同的功能和特性。下面列出了Flink代码仓库中的一些主要模块：
 
 **flink-core**: 包含核心类和接口，提供了基本的数据处理和执行引擎功能。
+
 **flink-java**: 提供了用于编写和执行基于Java的Flink程序的API和工具。
+
 **flink-streaming-java**: 提供了用于编写和执行基于Java的Flink流处理程序的API和工具。
+
 **flink-table**: 提供了基于表格的API和工具，支持将常规的SQL语句转换未Flink的操作图。
+
 **flink-sql**: 提供了用于执行SQL查询的API和工具，支持将常规的SQL语句转换为Flink的操作图。
+
 **flink-cep**: 提供了复杂事件处理（CEP）的库，用于在Flink中进行复杂事件模式匹配和规则检测。
+
 **flink-ml**：提供了机器学习的库，包括分类、回归、聚类、推荐等算法和工具。
+
 **flink-state-backends**: 提供了不同的状态后端实现，用于管理和持久化Flink作业的状态。
+
 **flink-runtime**: 包含Flink运行时的核心组件，如任务管理器、资源管理器、检查点和故障恢复机制等。
+
 **flink-gelly**：提供了图计算的库，支持图的构建、遍历、图算法等操作。
+
 **flink-clients**: 提供了与Flink集群交互的客户端工具，如提交作业、检索作业状态等。
+
 **flink-examples**: 包含一些示例代码，展示了如何使用Flink进行不同类型的数据处理和分析任务.
