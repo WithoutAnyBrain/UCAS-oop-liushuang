@@ -28,7 +28,7 @@ Apache Flink是一个开源的流处理框架，用于实时数据流的处理�
 
 <div style="text-align: center">
   <img src=".gitbook/assets/流和批示意图.png" alt="有界流和无界流">
-  <figcaption><p>有界流与无界流</p></figcaption>
+  <figcaption><p>图【1】有界流与无界流</p></figcaption>
 </div>
 
 ### Flink的核心特性
@@ -53,7 +53,7 @@ Apache Flink是一个开源的流处理框架，用于实时数据流的处理�
 
 下图展示了Apache Flink的架构，从底层的部署环境到核心运行时系统，再到上层的API和特定功能的库。下面将对图中的每个部分进行详细的解释。
 
-<figure><img src=".gitbook/assets/flink架构.png" alt=""><figcaption><p>Flink 的核心计算架构</p></figcaption></figure>
+<figure><img src=".gitbook/assets/flink架构.png" alt=""><figcaption><p>图【2】Flink 的核心计算架构</p></figcaption></figure>
 
 **Deploy：部署层。** 用于定义Flink应用的运行环境和部署方式。
 
