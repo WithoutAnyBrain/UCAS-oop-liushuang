@@ -1,6 +1,6 @@
-# 核心流程设计分析
+# 三. 核心流程设计分析(1)（启动环境与提交作业part）
 
-### 以单机模式在本地部署Flink：
+### 1. 以单机模式在本地部署Flink：
 
 <figure><img src=".gitbook/assets/启动flink.png" alt=""></figure>
 
@@ -18,7 +18,7 @@ Starting taskexecutor daemon on host foreigner.
 
 ***
 
-### Flink集群启动
+### 2. Flink集群启动
 
 【注1】
 
@@ -32,9 +32,9 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 
 在[flink-runtime/src/main/java/org/apache/flink/runtime/entrypoint/ClusterEntrypoint.java](https://github.com/apache/flink/blob/master/flink-runtime/src/main/java/org/apache/flink/runtime/entrypoint/ClusterEntrypoint.java)文件中定义了集群启动的步骤和逻辑。
 
-可以用下面的时序图来理解cluster启动的过程：
+我们首先用下面的时序图来理解cluster启动的过程，再结合代码解读：
 
-<figure><img src=".gitbook/assets/cluster启动.avif" alt="" width="5000"><figcaption style="text-align: center"><p>cluster启动时序图</p></figcaption></figure>
+<figure><img src=".gitbook/assets/cluster启动.avif" alt="" width="5000"><figcaption style="text-align: center"><p>图【1】cluster启动时序图</p></figcaption></figure>
 
 `ClusterEntrypoint` 类包含了 `runClusterEntrypoint`、`startCluster`、`initializeServices`、`runCluster` 四个核心方法。
 
