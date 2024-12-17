@@ -36,32 +36,34 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 
 <figure><img src=".gitbook/assets/cluster启动.avif" alt="" width="5000"><figcaption style="text-align: center"><p>图【1】cluster启动时序图</p></figcaption></figure>
 
-`ClusterEntrypoint` 类包含了 `runClusterEntrypoint`、`startCluster`、`initializeServices`、`runCluster` 四个核心方法。
+#### 1>
+
+`ClusterEntrypoint` 类包含了 `runClusterEntrypoint()`、`startCluster()`、`initializeServices()`、`runCluster()` 四个核心方法。
 
 【注】
 
 `ClusterEntrypoint` 是抽象类（意味着它没有实现），只能被子类继承实现。比如 `StandaloneSessionClusterEntrypoint` 是 `ClusterEntrypoint` 的子类，是 `ClusterEntrypoint` 的具体实现类，扩展了 `ClusterEntrypoint` 的功能。是 Flink 集群的入口程序，负责启动 `JobManager` 和 `TaskManager`。
 
-**runClusterEntrypoint 方法**
+**`runClusterEntrypoint()` 方法**
 * 功能: 启动集群入口的主方法（Flink 启动的起点）。
 * 顺序: 是整个 Flink 启动流程的第一步。
 * 工作内容: 处理异常并设置启动上下文。调用 `startCluster` 方法以执行主要逻辑。
 * 关系: 顶层方法，所有其他逻辑都通过它间接调用。
 
-**startCluster 方法**
+**`startCluster()` 方法**
 * 功能: 提供集群的主运行逻辑。
 * 顺序: 在 `runClusterEntrypoint` 调用后执行，是集群运行的核心部分。
 * 工作内容: 调用 `initializeServices` 初始化配置、文件系统和插件管理器。调用 `startCluster` 启动集群组件（如调度器、资源管理器等）。
 * 关系: 是集群运行的具体实现。依赖 `runCluster` 和 `initializeServices` 完成服务初始化和组件启动。
 
-**initializeServices 方法**
+**`initializeServices()` 方法**
 * 功能: 初始化全局服务和环境。
 * 顺序: 在 `runCluster` 方法中被调用，是启动的早期阶段。
 * 工作内容: 加载配置: 调用 `GlobalConfiguration.loadConfiguration` 加载 flink-conf.yaml 文件。
 初始化文件系统: 设置 `FileSystem`，支持分布式存储。初始化插件管理器: 加载插件（如扩展的 jar 包）。设置安全模块: 安装必要的安全模块（如 Hadoop 安全）。
 * 关系: 为后续的 `startCluster` 提供环境支持。
 
-**runCluster 方法**
+**`runCluster()` 方法**
 * 功能: 启动集群核心组件。
 * 顺序: 在 `initializeServices` 之后执行。
 * 工作内容: 创建 `DispatcherRestEndpoint`，提供 REST API。创建 `StandaloneResourceManager`，管理集群资源。创建 `JobMaster`，调度作业执行。
@@ -69,14 +71,15 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 
 
 **调用链:**
-1. `start-cluster.sh` 调用 `StandaloneSessionClusterEntrypoint.main()`
-     1. `main()` 调用 `ClusterEntrypoint.runClusterEntrypoint()`
-          1. `runClusterEntrypoint()` 调用 `ClusterEntrypoint.startCluster()`
-               1. `startCluster` 调用 `ClusterEntrypoint.runCluster()`
-                    1. `runCluster` 调用 `ClusterEntrypoint.initializeServices()`
-                         - `initializeServices` 返回 `runCluster`
-                    2. `runCluster` 调用 `ClusterEntrypoint.createDispatcherResourceManagerComponentFactory()`
-                       
+ `start-cluster.sh` 调用 `StandaloneSessionClusterEntrypoint.main()`
+     `main()` 调用 `ClusterEntrypoint.runClusterEntrypoint()`
+          `runClusterEntrypoint()` 调用 `ClusterEntrypoint.startCluster()`
+                `startCluster()` 调用 `ClusterEntrypoint.runCluster()`
+                     `runCluster()` 调用 `ClusterEntrypoint.initializeServices()`
+                         `initializeServices()` 返回 `runCluster`
+                     `runCluster()` 调用 `ClusterEntrypoint.createDispatcherResourceManagerComponentFactory()`
+
+#### 2>
 
 **`createDispatcherResourceManagerComponentFactory()` 被调用的效果**：
 工厂实例创建，返回一个 `DispatcherResourceManagerComponentFactory` 对象。
@@ -88,7 +91,7 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 
 `DispatcherResourceManagerComponentFactory` 的职责是创建一个 `DispatcherResourceManagerComponent`，这是 Flink 中的核心组件之一，是对调度器（Dispatcher）和资源管理器（ResourceManager）组件等的封装。
 
-在 `runCluster` 方法的后续流程中，使用这个工厂启动 `DispatcherRestEndpoint` 和 `StandaloneResourceManager`。
+在 `runCluster()` 方法的后续流程中，使用这个工厂启动 `DispatcherRestEndpoint` 和 `StandaloneResourceManager`。
 
 在创建 `DispatcherResourceManagerComponent` 实例时，构造方法会自动执行，初始化各个子模块，包括：
 
@@ -173,6 +176,8 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
     }
 }
 ```
+#### 3>
+
 ### JobManager启动
 
 `JobManager` 是集群的中央控制组件，管理任务的调度和故障恢复。
