@@ -1,10 +1,10 @@
-# 功能分析与建模
+# 二. 功能分析与建模
 
-### 功能分析
+### 1. 功能分析
 
 Flink的作业调度机制可以用下图说明（Flink Standalone模式）：
 
-<figure><img src="../%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/.gitbook/assets/%E6%8F%90%E4%BA%A4%E4%BD%9C%E4%B8%9A%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt=""><figcaption><p>Flink Standalone作业调度机制</p></figcaption></figure>
+<figure><img src=".gitbook/assets/%E6%8F%90%E4%BA%A4%E4%BD%9C%E4%B8%9A%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt=""><figcaption><p>Flink Standalone作业调度机制</p></figcaption></figure>
 
 Program Code通常是用户根据需求编写的Java代码，用于定义Flink应用程序的逻辑。Dataflow是用户定义的数据流程序，描述数据如何流动和处理。Optimizer优化执行计划，GraphBuilder将用户定义的程序代码转化为DataflowGraph。DataFlowGraph是一个有向图，表述了数据流程序的结构。图中的节点代表操作符，即算子（如map，filter），边代表数据流动的路径。它表示数据流的逻辑结构，包含数据流程序的操作符和它们之间的数据流动关系。DataflowGraph是Flink执行引擎（主要在runtime部分实现）理解和执行用户程序的基础。Client负责将用户的程序代码转换为DataflowGraph，并将其提交给JobManager，Client包含了Actor System【注1】来处理分布式通信，并监督作业的执行状态。
 
