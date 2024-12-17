@@ -55,7 +55,7 @@ Apache Flink是一个开源的流处理框架，用于实时数据流的处理�
 
 <figure><img src=".gitbook/assets/flink架构.png" alt=""><figcaption><p>图【2】Flink 的核心计算架构</p></figcaption></figure>
 
-**Deploy：部署层。** 用于定义Flink应用的运行环境和部署方式。
+**1> Deploy：部署层。** 用于定义Flink应用的运行环境和部署方式。
 
 * **Local（Single JVM）**：指在本地使用单一 JVM（Java 虚拟机）进行运行，主要用于开发和测试。
 * **Cluster（Standalone, YARN）**：支持集群模式的部署，包括：
@@ -65,11 +65,11 @@ Apache Flink是一个开源的流处理框架，用于实时数据流的处理�
   * **GCE（Google Compute Engine）**：Google 提供的云服务平台。
   * **EC2（Elastic Compute Cloud）**：Amazon 提供的弹性计算云服务。
 
-**Core：核心层。** 包含Flink的核心运行时组件，负责分布式数据流的执行和管理。
+**2> Core：核心层。** 包含Flink的核心运行时组件，负责分布式数据流的执行和管理。
 
   * **Runtime（Distributed Streaming Dataflow）**：Flink 的 Runtime 层实现了数据流的分布式执行模型，使得它能够处理大规模的实时数据流。
 
-**APIs & Libraries（API 和库层）**：提供给开发人员的编程接口和功能库，用于处理流数据和批处理数据，以及用于特定领域的库，如事件处理、机器学习等。
+**3> APIs & Libraries（API 和库层）**：提供给开发人员的编程接口和功能库，用于处理流数据和批处理数据，以及用于特定领域的库，如事件处理、机器学习等。
 
 * **DataStream API（Stream Processing）**：Flink 的流处理 API，主要用于处理无界数据流，适用于实时数据处理场景，如实时监控、事件处理等。
 * **DataSet API（Batch Processing）**：Flink 的批处理 API，主要用于处理有界的数据集，适用于批量数据处理场景，如批量数据分析、ETL（抽取、转换、加载）等。
