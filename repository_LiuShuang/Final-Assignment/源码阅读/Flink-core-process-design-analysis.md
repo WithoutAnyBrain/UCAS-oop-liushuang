@@ -1,4 +1,4 @@
-# 三. 核心流程设计分析(1)（启动环境与提交作业part）
+# 三. 核心流程设计分析
 
 ### 1. 以单机模式在本地部署Flink：
 
@@ -176,9 +176,10 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
     }
 }
 ```
-#### 3>
 
-### JobManager启动
+***
+
+### 3. JobManager启动
 
 `JobManager` 是集群的中央控制组件，管理任务的调度和故障恢复。
 通过 `DispatcherResourceManagerComponent` 类中的 `DispatcherRunner()` 方法启动和运行。
@@ -198,20 +199,24 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 3. `Dispatcher` 和 `ResourceManager` 开始运行。
 4. 启动 `TaskManager`，等待资源分配并执行任务。
 
-### taskmanager启动
+***
 
-<figure><img src=".gitbook/assets/taskmanager启动.jpg" alt="" width="5000"><figcaption style="text-align: center"><p>taskmanager启动时序图</p></figcaption></figure>
+### 4. taskmanager启动
+
+<figure><img src=".gitbook/assets/taskmanager启动.jpg" alt="" width="5000"><figcaption style="text-align: center"><p>图【2】taskmanager启动时序图</p></figcaption></figure>
 
 `runTaskManagerProcessSecurely()` 在文件[flink-runtime/src/main/java/org/apache/flink/runtime/taskexecutor/TaskManagerRunner.java](https://github.com/apache/flink/blob/master/flink-runtime/src/main/java/org/apache/flink/runtime/taskexecutor/TaskManagerRunner.java)中定义，
-由 `TaskManagerRunner.main` 方法调用，初始化并执行 `runTaskManager()`
+由 `TaskManagerRunner.main()` 方法调用，初始化并执行 `runTaskManager()`
 
-`runTaskManager` 方法实际负责启动 `TaskManager`，执行 `startTaskManagerRunnerService` 方法
+`runTaskManager()` 方法实际负责启动 `TaskManager`，执行 `startTaskManagerRunnerService()` 方法
 
-`startTaskManagerRunnerService` 方法启动 `TaskExecutor` （内部实例化），并将其注册到 `ResourceManager`，开始接收作业和资源。
+`startTaskManagerRunnerService()` 方法启动 `TaskExecutor` （内部实例化），并将其注册到 `ResourceManager`，开始接收作业和资源。
 
 ***
 
-### 提交作业
+***
+
+### 5. 提交作业
 
 以Flink官方仓库中提供的[flink/blob/master/flink-examples/flink-examples-streaming/src/main/java/org/apache/flink/streaming/examples/wordcount/WordCount.java](https://github.com/apache/flink/blob/master/flink-examples/flink-examples-streaming/src/main/java/org/apache/flink/streaming/examples/wordcount/WordCount.java)作业为例分析。
 
@@ -406,6 +411,7 @@ public class WordCount {
     }
 }
 ```
+#### 1>
 
 **首先我们分析一下这份代码文件**
 
@@ -420,13 +426,15 @@ final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEn
 env.setRuntimeMode(params.getExecutionMode());
 ```
 
-这行代码设置了Flink的执行模式，Flink支持三种执行模式：BATCH，STREAMING，AUTOMATIC。BATCH模式适用于有界数据集（批处理），STREAMING模式适用于无界数据集（流处理），AUTOMATIC模式会根据输入数据集的有界性自动选择执行模式。
+这行代码设置了Flink的执行模式。
+Flink支持三种执行模式：BATCH，STREAMING，AUTOMATIC。BATCH模式适用于有界数据集（批处理），STREAMING模式适用于无界数据集（流处理），AUTOMATIC模式会根据输入数据集的有界性自动选择执行模式。
 这行代码从用户提供的命令行参数获取执行模式，如果参数未提供，则默认使用AUTOMATIC模式。
 
 接下来的代码（没有粘贴）定义数据流的代码功能：决定数据源的类型（文件源或内存源），并将数据源转换成DataStream对象。如果定义了文件监控 (builder.monitorContinuously)，数据源会被视为无界数据源，从而触发STREAMING模式。
 如果没有监控间隔，文件数据会被视为有界数据源，通常会触发BATCH模式（如果模式是AUTOMATIC）。
 
 上游的数据源定义决定了下游算子的执行数据范围和处理逻辑。
+算子部分的代码片段是：
 
 ```java
 DataStream<Tuple2<String, Integer>> counts =
@@ -472,11 +480,13 @@ Chain（算子链）：是Flink的优化机制，将多个算子合并到同一�
 
 接下来的代码（无粘贴）设置输出逻辑：如果提供了输出路径，将结果写入文件；否则，将结果打印到控制台。
 
+最后：
+
 ```java
 env.execute("WordCount");
 ```
 
-这行代码执行Flink程序，提交作业并开始处理数据。env.execute方法是一个阻塞方法，直到作业执行完成才会返回。
+这行代码执行Flink程序，提交作业并开始处理数据。`env.execute()`方法是一个阻塞方法，直到作业执行完成才会返回。
 
 算子的定义在调用execute方法之前，在Flink的执行环境中注册了算子，而不是立即执行。
 Flink的执行环境是懒加载的，只有调用execute方法时，Flink才将这些算子构建为一个作业图（JobGraph），然后提交作业给JobManager执行。
@@ -490,6 +500,8 @@ env.execute()调用后，每个算子（source，flatMap等）都会被解析为
 
 JobManager根据JobGraph将任务调度到合适的TaskManager。
 TaskManager是Flink的工作节点，每个算子链会被分配到一个TaskManager上的一个或多个TaskSlot中，TaskSlot是TaskManager的资源分配单元。
+
+#### 2>
 
 **提交作业**
 
@@ -507,9 +519,11 @@ mvn clean package
 
 <figure><img src=".gitbook/assets/wordcount启动.png" alt=""></figure>
 
-### 分析作业提交的流程
+***
 
-<figure><img src=".gitbook/assets/作业流程图.png" alt=""></figure>
+### 6. 分析作业提交的流程
+
+<figure><img src=".gitbook/assets/作业流程图.png" alt=""><figcaption><p>图【3】作业提交时序图</p></figcaption></figure>
 
 作业通过 REST API 或 CLI 提交，被Dispatcher接收。
 
@@ -541,7 +555,9 @@ mvn clean package
 - 职责: 构建 `ExecutionGraph` ，将任务分发给集群中的 `TaskManager`，并监控执行。
 - 关键方法: `initializeFromJobGraph()` 初始化作业图，`scheduleExecutionGraph()` 调度执行图
 
-### 总结
+***
+
+### 7. 总结
 
 standalonesession daemon是JobManager的守护进程，它是flink集群的主控进程，负责：接受和管理用户提交的作业；调度任务到各个TaskManager；监控集群的状态，包括资源分配、任务执行状态等。
 
@@ -568,8 +584,8 @@ CLASS_TO_RUN=org.apache.flink.runtime.taskexecutor.TaskManagerRunner
 ;;
 ``` 
 
-### Flink的图结构
+***
 
-<figure style="text-align: center"><img src=".gitbook/assets/flink的三层图结构.png" alt=""><figcaption><p>flink的三层图结构</p></figcaption></figure>
+### 8. Flink的图结构
 
-
+<figure style="text-align: center"><img src=".gitbook/assets/flink的三层图结构.png" alt=""><figcaption><p>图【4】flink的三层图结构</p></figcaption></figure>
