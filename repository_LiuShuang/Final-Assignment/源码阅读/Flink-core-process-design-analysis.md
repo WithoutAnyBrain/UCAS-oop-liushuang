@@ -71,13 +71,13 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 
 
 **调用链:**
- `start-cluster.sh` 调用 `StandaloneSessionClusterEntrypoint.main()`
-     1. `main()` 调用 `ClusterEntrypoint.runClusterEntrypoint()`
-          1. `runClusterEntrypoint()` 调用 `ClusterEntrypoint.startCluster()`
-                1. `startCluster()` 调用 `ClusterEntrypoint.runCluster()`
-                     1. `runCluster()` 调用 `ClusterEntrypoint.initializeServices()`
-                         1. `initializeServices()` 返回 `runCluster`
-                     2. `runCluster()` 调用 `ClusterEntrypoint.createDispatcherResourceManagerComponentFactory()`
+1. start-cluster.sh 调用 StandaloneSessionClusterEntrypoint.main()
+     1. main() 调用 ClusterEntrypoint.runClusterEntrypoint()
+          1. runClusterEntrypoint() 调用 ClusterEntrypoint.startCluster()
+               1. startCluster 调用 ClusterEntrypoint.runCluster()
+                    1. runCluster 调用 ClusterEntrypoint.initializeServices()
+                         - initializeServices 返回 runCluster
+                    2. runCluster 调用 ClusterEntrypoint.createDispatcherResourceManagerComponentFactory()
 
 #### 2>
 
