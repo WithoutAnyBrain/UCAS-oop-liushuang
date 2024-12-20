@@ -220,7 +220,8 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 
 `startTaskManagerRunnerService()` 方法启动 `TaskExecutor` （内部实例化），并将其注册到 `ResourceManager`，开始接收作业和资源。
 
-<figure><img src=".gitbook/assets/taskmanager启动代码.jpg" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/taskmanager启动代码1.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/taskmanager启动代码2.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
 
 ***
 
