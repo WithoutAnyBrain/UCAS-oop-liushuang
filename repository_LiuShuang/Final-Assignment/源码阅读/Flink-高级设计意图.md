@@ -8,7 +8,7 @@
 
 **例子：** 入口类entrypoint
 
-<figure><img src=".gitbook/assets/模板模式类图.png"><caption>图【1】抽象模板类和具体实现子类的类图</caption></figure>
+<figure><img src=".gitbook/assets/模板模式类图.png" width="600"><caption>图【1】抽象模板类和具体实现子类的类图</caption></figure>
 
 entrypoint.StandaloneSessionClusterEntrypoint类
 ```java
@@ -36,7 +36,7 @@ private void runCluster(Configuration configuration, PluginManager pluginManager
 
 **例子：** defaultDispatcherResourceManagerComponentFactory，resourceManagerFactory，dispatcherFactory
 
-<figure><img src=".gitbook/assets/工厂模式类图.png"><caption>图【2】工厂模式类图</caption></figure>
+<figure><img src=".gitbook/assets/工厂模式类图.png" width="600"><caption>图【2】工厂模式类图</caption></figure>
 
 ```java
 public class DefaultDispatcherResourceManagerComponentFactory implements DispatcherResourceManagerComponentFactory {
@@ -56,7 +56,7 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 
 **例子：** jobGraphBuilder
 
-<figure><img src=".gitbook/assets/生成器模式代码.png" width="500"><caption>图【3】生成器模式代码</caption></figure>
+<figure><img src=".gitbook/assets/生成器模式代码.png" width="600"><caption>图【3】生成器模式代码</caption></figure>
 
 ### 4. 观察者模式
 
