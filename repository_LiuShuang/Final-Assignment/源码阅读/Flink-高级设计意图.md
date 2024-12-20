@@ -1,6 +1,12 @@
 # 四. 高级设计意图
 
-我们以Flink用到的Java设计模式来分析Flink的高级设计意图。
+首先我们用下图来了解Flink的整体架构和功能。
+
+<figure><img src=".gitbook/assets/flink的整体架构.png" width="800"><caption>图【1】Flink整体架构</caption></figure>
+
+***
+
+然后，我们以Flink用到的Java设计模式来分析Flink的高级设计意图。
 
 ### 1. 模板模式
 
@@ -8,7 +14,7 @@
 
 **例子：** 入口类entrypoint
 
-<figure><img src=".gitbook/assets/模板模式类图.png" width="600"><caption>图【1】抽象模板类和具体实现子类的类图</caption></figure>
+<figure><img src=".gitbook/assets/模板模式类图.png" width="600"><caption>图【2】抽象模板类和具体实现子类的类图</caption></figure>
 
 entrypoint.StandaloneSessionClusterEntrypoint类
 ```java
@@ -36,7 +42,7 @@ private void runCluster(Configuration configuration, PluginManager pluginManager
 
 **例子：** defaultDispatcherResourceManagerComponentFactory，resourceManagerFactory，dispatcherFactory
 
-<figure><img src=".gitbook/assets/工厂模式类图.png" width="600"><caption>图【2】工厂模式类图</caption></figure>
+<figure><img src=".gitbook/assets/工厂模式类图.png" width="600"><caption>图【3】工厂模式类图</caption></figure>
 
 ```java
 public class DefaultDispatcherResourceManagerComponentFactory implements DispatcherResourceManagerComponentFactory {
@@ -56,7 +62,7 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 
 **例子：** jobGraphBuilder
 
-<figure><img src=".gitbook/assets/生成器模式代码.png" width="600"><caption>图【3】生成器模式代码</caption></figure>
+<figure><img src=".gitbook/assets/生成器模式代码.png" width="600"><caption>图【4】生成器模式代码</caption></figure>
 
 ### 4. 观察者模式
 
@@ -64,7 +70,7 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 
 **例子：** heartbeat心跳信号
 
-<figure><img src=".gitbook/assets/观察者模式代码.png" width="600"><caption>图【4】观察者模式代码</caption></figure>
+<figure><img src=".gitbook/assets/观察者模式代码.png" width="600"><caption>图【5】观察者模式代码</caption></figure>
 
 ### 5. 快照模式
 
@@ -107,7 +113,7 @@ private void restoreStateToCoordinators(
 
 提供高可用性相关的功能，如领导者选举
 
-<figure><img src=".gitbook/assets/门面模式代码.png" width="600"><caption>图【5】门面模式代码</caption></figure>
+<figure><img src=".gitbook/assets/门面模式代码.png" width="600"><caption>图【6】门面模式代码</caption></figure>
 
 ### 7. 策略模式
 
@@ -117,4 +123,4 @@ private void restoreStateToCoordinators(
 
 ALWAYS总是链在一起，NEVER从不链在一起，HEAD作为头节点链在一起
 
-<figure><img src=".gitbook/assets/策略模式代码.png" width="400"><caption>图【6】策略模式代码</caption></figure>
+<figure><img src=".gitbook/assets/策略模式代码.png" width="400"><caption>图【7】策略模式代码</caption></figure>
