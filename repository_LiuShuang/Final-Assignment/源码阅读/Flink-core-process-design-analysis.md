@@ -38,11 +38,11 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 
 #### 1>
 
-`ClusterEntrypoint` 类包含了 `runClusterEntrypoint()`、`startCluster()`、`initializeServices()`、`runCluster()` 四个核心方法。
+`ClusterEntrypoint` 抽象模板类包含了 `runClusterEntrypoint()`、`startCluster()`、`initializeServices()`、`runCluster()` 四个核心方法。
 
 【注】
 
-`ClusterEntrypoint` 是抽象类（意味着它没有实现），只能被子类继承实现。比如 `StandaloneSessionClusterEntrypoint` 是 `ClusterEntrypoint` 的子类，是 `ClusterEntrypoint` 的具体实现类，扩展了 `ClusterEntrypoint` 的功能。是 Flink 集群的入口程序，负责启动 `JobManager` 和 `TaskManager`。
+`ClusterEntrypoint` 是抽象类（意味着它没有实现），只能被子类继承实现。比如 `StandaloneSessionClusterEntrypoint` 是 `ClusterEntrypoint` 的子类，是 `ClusterEntrypoint` 的具体实现类，扩展了 `ClusterEntrypoint` 的功能。是本地部署 Flink 集群的入口程序。
 
 **`runClusterEntrypoint()` 方法**
 * 功能: 启动集群入口的主方法（Flink 启动的起点）。
@@ -53,36 +53,42 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 **`startCluster()` 方法**
 * 功能: 提供集群的主运行逻辑。
 * 顺序: 在 `runClusterEntrypoint` 调用后执行，是集群运行的核心部分。
-* 工作内容: 调用 `initializeServices` 初始化配置、文件系统和插件管理器。调用 `startCluster` 启动集群组件（如调度器、资源管理器等）。
-* 关系: 是集群运行的具体实现。依赖 `runCluster` 和 `initializeServices` 完成服务初始化和组件启动。
+* 工作内容: 调用 `initializeServices` 初始化配置、文件系统和插件管理器。调用 `startCluster()` 启动集群组件（如调度器dispatcher、资源管理器resourcemanager等）。
+* 关系: 是集群运行的具体实现。依赖 `initializeServices()` 和 `runCluster()` 完成服务初始化和组件启动。
 
 **`initializeServices()` 方法**
 * 功能: 初始化全局服务和环境。
-* 顺序: 在 `runCluster` 方法中被调用，是启动的早期阶段。
-* 工作内容: 加载配置: 调用 `GlobalConfiguration.loadConfiguration` 加载 flink-conf.yaml 文件。
+* 顺序: 在 `runCluster()` 方法中被调用，是启动的早期阶段。
+* 工作内容: 加载配置: 调用 `GlobalConfiguration.loadConfiguration()` 加载 flink-conf.yaml 文件。
 初始化文件系统: 设置 `FileSystem`，支持分布式存储。初始化插件管理器: 加载插件（如扩展的 jar 包）。设置安全模块: 安装必要的安全模块（如 Hadoop 安全）。
-* 关系: 为后续的 `startCluster` 提供环境支持。
+* 关系: 为后续的 `runCluster()` 提供环境支持。
 
 **`runCluster()` 方法**
 * 功能: 启动集群核心组件。
-* 顺序: 在 `initializeServices` 之后执行。
-* 工作内容: 创建 `DispatcherRestEndpoint`，提供 REST API。创建 `StandaloneResourceManager`，管理集群资源。创建 `JobMaster`，调度作业执行。
-* 关系: 依赖 `initializeServices` 提供的全局配置和环境。
+* 顺序: 在 `initializeServices()` 之后执行。
+* 工作内容: 创建 `DispatcherRestEndpoint`，提供 REST API。创建'dispatcher'，管理和调度jobmanager。创建 `StandaloneResourceManager`，管理集群资源。创建 `JobMaster`，调度作业执行。
+* 关系: 依赖 `initializeServices()` 提供的全局配置和环境。
 
 
 **调用链:**
-1. start-cluster.sh 调用 StandaloneSessionClusterEntrypoint.main()
-     1. main() 调用 ClusterEntrypoint.runClusterEntrypoint()
+1. start-cluster.sh 脚本调用 jobmanager.sh 后执行 flink-daemon.sh 脚本，调用 org.apache.flink.runtime.entrypoint.StandaloneSessionClusterEntrypoint类
+     1. StandaloneSessionClusterEntrypoint的main() 调用 ClusterEntrypoint.runClusterEntrypoint()
           1. runClusterEntrypoint() 调用 ClusterEntrypoint.startCluster()
-               1. startCluster 调用 ClusterEntrypoint.runCluster()
-                    1. runCluster 调用 ClusterEntrypoint.initializeServices()
+               1. startCluster() 调用 ClusterEntrypoint.runCluster()
+                    1. runCluster() 调用 ClusterEntrypoint.initializeServices()
                          - initializeServices 返回 runCluster
-                    2. runCluster 调用 ClusterEntrypoint.createDispatcherResourceManagerComponentFactory()
+                    2. runCluster() 调用 ClusterEntrypoint.createDispatcherResourceManagerComponentFactory()
+
+这一部分的代码可以在下图中详细展示：
+
+<figure><img src=".gitbook/assets/脚本文件.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/runcluster()方法调用过程.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/runcluster()方法调用过程2.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
 
 #### 2>
 
 **`createDispatcherResourceManagerComponentFactory()` 被调用的效果**：
-工厂实例创建，返回一个 `DispatcherResourceManagerComponentFactory` 对象。
+工厂实例创建，返回一个 `defaultDispatcherResourceManagerComponentFactory` 对象。
 
 【注】
 
@@ -177,6 +183,8 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 }
 ```
 
+<figure><img src=".gitbook/assets/componentfactory.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
+
 ***
 
 ### 3. JobManager启动
@@ -186,7 +194,7 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 
 启动集群后，以下组件会接连启动：
 
-`Dispatcher (JobManager)`: 负责作业的调度、提交和监控。提供一个 REST 接口供用户提交作业。
+`Dispatcher`: 负责作业的调度、提交和监控。提供一个 REST 接口供用户提交作业。
 
 `ResourceManager`: 管理集群资源。处理 TaskManager 的注册，并将任务分配给工作节点。
 
@@ -211,6 +219,8 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 `runTaskManager()` 方法实际负责启动 `TaskManager`，执行 `startTaskManagerRunnerService()` 方法
 
 `startTaskManagerRunnerService()` 方法启动 `TaskExecutor` （内部实例化），并将其注册到 `ResourceManager`，开始接收作业和资源。
+
+<figure><img src=".gitbook/assets/taskmanager启动代码.jpg" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
 
 ***
 
@@ -413,12 +423,16 @@ public class WordCount {
 
 **首先我们分析一下这份代码文件**
 
+i.
+
 ```java
 final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 ```
 
 这行代码创建了一个流式执行环境，是Flink程序的入口。接下来的代码中，我们会使用这个env对象来构建我们的Flink程序。
 如，我们可以设置环境的各种属性和方法，例如并行度，checkpoint，execute方法等。
+
+ii. 
 
 ```java
 env.setRuntimeMode(params.getExecutionMode());
@@ -428,8 +442,12 @@ env.setRuntimeMode(params.getExecutionMode());
 Flink支持三种执行模式：BATCH，STREAMING，AUTOMATIC。BATCH模式适用于有界数据集（批处理），STREAMING模式适用于无界数据集（流处理），AUTOMATIC模式会根据输入数据集的有界性自动选择执行模式。
 这行代码从用户提供的命令行参数获取执行模式，如果参数未提供，则默认使用AUTOMATIC模式。
 
+iii.
+
 接下来的代码（没有粘贴）定义数据流的代码功能：决定数据源的类型（文件源或内存源），并将数据源转换成DataStream对象。如果定义了文件监控 (builder.monitorContinuously)，数据源会被视为无界数据源，从而触发STREAMING模式。
 如果没有监控间隔，文件数据会被视为有界数据源，通常会触发BATCH模式（如果模式是AUTOMATIC）。
+
+iv.
 
 上游的数据源定义决定了下游算子的执行数据范围和处理逻辑。
 算子部分的代码片段是：
@@ -476,7 +494,11 @@ Flink流式计算的核心概念是将数据从输入流一个个传递给Operat
 Chain（算子链）：是Flink的优化机制，将多个算子合并到同一个任务中，从而减少网络通信开销。算子们是否组成Chain取决于Flink的任务链策略。
 在实际运行中，可以通过设置 env.disableOperatorChaining() 禁用算子链，或者使用 startNewChain()、disableChaining() 控制链的边界，从而影响 StreamGraph 到 JobGraph 的生成过程。
 
+v.
+
 接下来的代码（无粘贴）设置输出逻辑：如果提供了输出路径，将结果写入文件；否则，将结果打印到控制台。
+
+vi.
 
 最后：
 
