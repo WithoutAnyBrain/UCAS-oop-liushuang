@@ -64,7 +64,7 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 
 **例子：** heartbeat心跳信号
 
-<figure><img src=".gitbook/assets/观察者模式代码.png" width="300"><caption>图【4】观察者模式代码</caption></figure>
+<figure><img src=".gitbook/assets/观察者模式代码.png" width="500"><caption>图【4】观察者模式代码</caption></figure>
 
 ### 5. 快照模式
 
