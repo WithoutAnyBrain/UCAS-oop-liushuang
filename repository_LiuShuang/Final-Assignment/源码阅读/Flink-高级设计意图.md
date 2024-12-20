@@ -56,7 +56,7 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 
 **例子：** jobGraphBuilder
 
-<figure><img src=".gitbook/assets/生成器模式代码.png"><caption>图【3】生成器模式代码</caption></figure>
+<figure><img src=".gitbook/assets/生成器模式代码.png" width="500"><caption>图【3】生成器模式代码</caption></figure>
 
 ### 4. 观察者模式
 
@@ -64,7 +64,7 @@ public class DefaultDispatcherResourceManagerComponentFactory implements Dispatc
 
 **例子：** heartbeat心跳信号
 
-<figure><img src=".gitbook/assets/观察者模式代码.png" width="500"><caption>图【4】观察者模式代码</caption></figure>
+<figure><img src=".gitbook/assets/观察者模式代码.png" width="600"><caption>图【4】观察者模式代码</caption></figure>
 
 ### 5. 快照模式
 
@@ -107,7 +107,7 @@ private void restoreStateToCoordinators(
 
 提供高可用性相关的功能，如领导者选举
 
-<figure><img src=".gitbook/assets/门面模式代码.png"><caption>图【5】门面模式代码</caption></figure>
+<figure><img src=".gitbook/assets/门面模式代码.png" width="600"><caption>图【5】门面模式代码</caption></figure>
 
 ### 7. 策略模式
 
@@ -117,4 +117,4 @@ private void restoreStateToCoordinators(
 
 ALWAYS总是链在一起，NEVER从不链在一起，HEAD作为头节点链在一起
 
-<figure><img src=".gitbook/assets/策略模式代码.png"><caption>图【6】策略模式代码</caption></figure>
+<figure><img src=".gitbook/assets/策略模式代码.png" width="400"><caption>图【6】策略模式代码</caption></figure>
