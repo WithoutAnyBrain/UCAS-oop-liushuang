@@ -81,9 +81,9 @@ cluster是flink的集群环境，是分布式系统的核心概念。
 
 这一部分的代码可以在下图中详细展示：
 
-<figure><img src=".gitbook/assets/脚本文件.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
-<figure><img src=".gitbook/assets/runcluster()方法调用过程.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
-<figure><img src=".gitbook/assets/runcluster()方法调用过程2.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/脚本文件.png" alt="" width="600"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/runcluster()方法调用过程.png" alt="" width="600"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/runcluster()方法调用过程2.png" alt="" width="600"><figcaption style="text-align: center"></figcaption></figure>
 
 #### 2>
 
@@ -183,7 +183,7 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 }
 ```
 
-<figure><img src=".gitbook/assets/componentfactory.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/componentfactory.png" alt="" width="600"><figcaption style="text-align: center"></figcaption></figure>
 
 ***
 
@@ -211,7 +211,7 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 
 ### 4. taskmanager启动
 
-<figure><img src=".gitbook/assets/taskmanager启动.jpg" alt="" width="5000"><figcaption style="text-align: center"><p>图【2】taskmanager启动时序图</p></figcaption></figure>
+<figure><img src=".gitbook/assets/taskmanager启动.jpg" alt="" width="600"><figcaption style="text-align: center"><p>图【2】taskmanager启动时序图</p></figcaption></figure>
 
 `runTaskManagerProcessSecurely()` 在文件[flink-runtime/src/main/java/org/apache/flink/runtime/taskexecutor/TaskManagerRunner.java](https://github.com/apache/flink/blob/master/flink-runtime/src/main/java/org/apache/flink/runtime/taskexecutor/TaskManagerRunner.java)中定义，
 由 `TaskManagerRunner.main()` 方法调用，初始化并执行 `runTaskManager()`
@@ -220,8 +220,8 @@ public class DispatcherResourceManagerComponent implements AutoCloseableAsync {
 
 `startTaskManagerRunnerService()` 方法启动 `TaskExecutor` （内部实例化），并将其注册到 `ResourceManager`，开始接收作业和资源。
 
-<figure><img src=".gitbook/assets/taskmanager启动代码1.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
-<figure><img src=".gitbook/assets/taskmanager启动代码2.png" alt="" width="5000"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/taskmanager启动代码1.png" alt="" width="600"><figcaption style="text-align: center"></figcaption></figure>
+<figure><img src=".gitbook/assets/taskmanager启动代码2.png" alt="" width="600"><figcaption style="text-align: center"></figcaption></figure>
 
 ***
 
