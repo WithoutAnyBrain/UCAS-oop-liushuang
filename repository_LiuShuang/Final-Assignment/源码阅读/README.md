@@ -8,4 +8,4 @@
 
 感谢阅读与指正。
 
-源码阅读的gitbook网址是[https://susulily.gitbook.io/flink-zuo-ye-diao-du-ji-zhi/](https://susulily.gitbook.io/flink-zuo-ye-diao-du-ji-zhi/)，但同步过去的时候可能会出现格式错误，如果gitbook的内容效果不好，一定要以GitHub的内容为准！！
+源码阅读的gitbook网址是[https://susulily.gitbook.io/flink-zuo-ye-diao-du-ji-zhi/](https://susulily.gitbook.io/flink-zuo-ye-diao-du-ji-zhi/)，但同步过去的时候可能会出现格式错误(比如它一直无法绘出类图！！！）。如果gitbook的内容效果不好（尤其是“功能分析与建模”的类图部分！！！），一定要以GitHub的内容为准！！！
