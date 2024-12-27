@@ -26,10 +26,10 @@ Apache Flink是一个开源的流处理框架，用于实时数据流的处理�
 
 可以用下图形象地展示有界数据流和无界数据流的概念。
 
-<div style="text-align: center">
+<figure>
   <img src=".gitbook/assets/流和批示意图.png" alt="有界流和无界流">
   <figcaption><p>图【1】有界流与无界流</p></figcaption>
-</div>
+</figure>
 
 ### 3. Flink的核心特性
 
