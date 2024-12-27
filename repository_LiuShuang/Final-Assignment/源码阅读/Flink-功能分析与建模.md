@@ -45,7 +45,7 @@ Task Manager是Flink中的工作节点，负责执行具体的任务，处理数
 
 我们根据上述功能分析，可以进行面向对象的建模。
 
-### 3. 面向对象的建模
+### 2. 面向对象的建模
 
 根据上述作业调度机制的功能，我们可以定义出以下类，并将每个类的属性和方法详细地列在表中（因为类太多，导致画成类图字体太小，可读性差，所以我先用列表的形式表示，再用类图示意）。
 
@@ -271,11 +271,11 @@ ActorSystem --> Message : sends/receives
 
 ```
 
-### 4. 数据流动
+### 3. 数据流动
 
 数据流动关系和方向以及在最上面的流程图以及类图中体现了，故此处不再赘述。
 
-### 5. 依赖关系矩阵
+### 4. 依赖关系矩阵
 
 <table data-full-width="false"><thead><tr><th width="182">类名</th><th width="46">ActorSystem</th><th width="47">Client</th><th width="45">JobManager</th><th width="47">Scheduler</th><th width="46">CheckpointCoordinator</th><th width="46">TaskManager</th><th width="43">NetworkManager</th><th width="40">DataflowGraph</th><th width="46">ExecutionGraph</th><th width="44">TaskSlot</th><th width="46">Task</th><th width="48">Operator</th><th width="47">Checkpoint</th><th>Message</th></tr></thead><tbody><tr><td>ActorSystem</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr><tr><td>Client</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>JobManager</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr><tr><td>Scheduler</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Checkpoint-Coordinator</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr><tr><td>TaskManager</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr><tr><td>NetworkManager</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>DataflowGraph</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr><tr><td>ExecutionGraph</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><td>TaskSlot</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Task</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td></tr><tr><td>Operator</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><td>Checkpoint</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td></tr><tr><td>Message</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr></tbody></table>
 
